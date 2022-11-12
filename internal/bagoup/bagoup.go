@@ -163,15 +163,20 @@ func (cfg *configuration) validatePaths() error {
 	if err := cfg.OS.FileAccess(cfg.Options.DBPath); err != nil {
 		return errors.Wrapf(err, "test DB file %q - FIX: %s", cfg.Options.DBPath, _readmeURL)
 	}
-	if exist, err := cfg.OS.FileExist(cfg.Options.ExportPath); exist {
-		return fmt.Errorf("export folder %q already exists - FIX: move it or specify a different export path with the --export-path option", cfg.Options.ExportPath)
-	} else if err != nil {
+	if exist, err := cfg.OS.FileExist(cfg.Options.ExportPath); err != nil {
 		return errors.Wrapf(err, "check export path %q", cfg.Options.ExportPath)
+	} else if exist {
+		return fmt.Errorf("export folder %q already exists - FIX: move it or specify a different export path with the --export-path option", cfg.Options.ExportPath)
 	}
 	var err error
 	var attPathAbs string
 	if attPathAbs, err = filepath.Abs(cfg.Options.AttachmentsPath); err != nil {
 		return errors.Wrapf(err, "convert attachments path %q to an absolute path", cfg.Options.AttachmentsPath)
+	}
+	if exist, err := cfg.OS.FileExist(attPathAbs); err != nil {
+		return errors.Wrapf(err, "check attachments path %q", attPathAbs)
+	} else if !exist {
+		return fmt.Errorf("attachments path %q does not exist", attPathAbs)
 	}
 	cfg.Options.AttachmentsPath = attPathAbs
 	return nil
