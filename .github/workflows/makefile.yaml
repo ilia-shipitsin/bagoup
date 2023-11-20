@@ -4,6 +4,7 @@ on:
   push: {}
   pull_request:
     branches: [ $default-branch ]
+  workflow_dispatch:
 
 jobs:
 
