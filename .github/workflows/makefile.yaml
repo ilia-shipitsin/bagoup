@@ -9,7 +9,11 @@ on:
 jobs:
 
   build-and-test:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'macos-13', 'macos-12' ]
     steps:
     - uses: actions/checkout@v3
 
